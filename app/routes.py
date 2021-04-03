@@ -88,6 +88,11 @@ def profile(username):
     return render_template('profile.html', current_page='profile', user=user)
 
 
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+
 @app.route('/follow/<username>', methods=['POST'])
 def follow(username):
     pass
