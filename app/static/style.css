@@ -107,3 +107,7 @@ button {
   width: 100px;
   color: white;
 }
+
+.error {
+  color: #b20000;
+}

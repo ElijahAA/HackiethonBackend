@@ -11,6 +11,9 @@
 <header id=name>Login</header>
 <body>
 <form class='form' method="POST">
+    {% if error %}
+        <p class='error'>{{ error}}</p>
+    {% endif %}
     <div class='form-group'>
         <label for="username">Username</label>
         <input type="text" class='input' name="username" id="username">

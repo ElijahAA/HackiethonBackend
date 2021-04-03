@@ -1,7 +1,9 @@
 <ul class='nav'>
     <li><a class='active' href="{{ url_for('index') }}">Home</a></li>
 
-    {% if not current_user.is_authenticated %}
+    {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    {% else %}
         <li><a href="{{ url_for('login') }}">Login</a></li>
         <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
     {% endif %}

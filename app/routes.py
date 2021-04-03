@@ -30,7 +30,13 @@ def login():
     return redirect(url_for('todo'))
 
 
-@app.route('/sign-up')
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+@app.route('/sign-up', methods=['GET', 'POST'])
 def signup():
     render_template('signUp.html')
 

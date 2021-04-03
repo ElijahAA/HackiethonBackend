@@ -6,8 +6,7 @@ from datetime import datetime
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-                     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-                     )
+                     db.Column('followed_id', db.Integer, db.ForeignKey('user.id')))
 
 
 class User(UserMixin, db.Model):
@@ -41,7 +40,7 @@ class User(UserMixin, db.Model):
     def followed_todos(self):
         followed = Todo.query.join(
             followers, (followers.c.followed_id == Todo.user_id)).filter(
-                followers.c.follower_id == self.id)
+            followers.c.follower_id == self.id)
         own = Todo.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Todo.created_at.desc())
 
@@ -82,4 +81,3 @@ class TodoReaction(db.Model):
 
     def __repr__(self):
         return '<TodoReaction {}: {}>'.format(self.name, self.count)
-
