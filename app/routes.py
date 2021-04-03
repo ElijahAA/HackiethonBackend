@@ -79,7 +79,7 @@ def todo():
     newTodo = Todo(title=title, description=description, user=user)
     db.session.add(newTodo)
     db.session.commit()
-    return redirect('/todo')
+    return redirect(url_for('todo'))
 
 
 @app.route('/profile/<username>')
@@ -101,3 +101,16 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=['POST'])
 def unfollow(username):
     pass
+
+
+@app.route('/edit-profile', methods=['POST', 'GET'])
+def editProfile():
+    # TODO insert picture here please
+    # TODO also somehow make this work please
+    bio = request.form['bio']
+    username = request.form['username']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+
+    return redirect(f'/profile/{current_user.username}')
