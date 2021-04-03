@@ -17,6 +17,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    password_reset = db.Column(db.String(15), index=True, unique=True, default=None)
     todos = db.relation('Todo', backref='user', lazy='dynamic')
 
     followed = db.relationship(
@@ -76,16 +77,9 @@ class Todo(db.Model):
 class TodoReaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), index=True, nullable=False)
+    count = db.Column(db.Integer, index=True)
     todo_id = db.Column(db.Integer, db.ForeignKey('todo.id'))
 
     def __repr__(self):
-        return '<TodoReaction {}>'.format(self.name)
+        return '<TodoReaction {}: {}>'.format(self.name, self.count)
 
-
-class FriendRequest(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, index=True, nullable=False)
-    receiver_id = db.Column(db.Integer, index=True, nullable=False)
-
-    def __repr__(self):
-        return '<FriendRequest {}>'.format(self.sender_id)

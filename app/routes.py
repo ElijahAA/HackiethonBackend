@@ -5,6 +5,12 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Todo
 
 
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form['username']
@@ -39,5 +45,3 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=['POST'])
 def unfollow(username):
     pass
-
-
