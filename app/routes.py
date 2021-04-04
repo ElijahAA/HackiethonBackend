@@ -181,13 +181,21 @@ def save_avatar(file):
 @app.route('/follow/<username>')
 @login_required
 def follow(username):
-    pass
+    user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user:
+        return redirect(url_for('profile', username=username))
+    current_user.follow(user)
+    return redirect(url_for('profile', username=username))
 
 
 @app.route('/unfollow/<username>')
 @login_required
 def unfollow(username):
-    pass
+    user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user:
+        return redirect(url_for('profile', username=username))
+    current_user.unfollow(user)
+    return redirect(url_for('profile', username=username))
 
 
 @app.errorhandler(404)
