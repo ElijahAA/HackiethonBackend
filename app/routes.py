@@ -239,19 +239,12 @@ def unfollow(username):
     return redirect(url_for('profile', username=username))
 
 
-@app.route('/notifications', methods=['POST'])
+@app.route('/read-notifications', methods=['POST'])
 @login_required
 def notifications():
-    new_notifications = current_user.notifications.filter(
-        Notification.timestamp > current_user.last_notification_read_time).count() > 0
-    notifications = current_user.notifications.order_by(Notification.timestamp.asc()).limit(10).all()
-    return jsonify({
-        'new': new_notifications,
-        'notifications': [{
-            'data': n.get_data(),
-            'timestamp': n.timestamp
-        } for n in notifications]
-    })
+    current_user.last_notification_read_time = datetime.utcnow()
+    db.session.commit()
+    return jsonify(result="success")
 
 
 @app.errorhandler(404)

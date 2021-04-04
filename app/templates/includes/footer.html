@@ -7,6 +7,7 @@
 
     function myFunction2() {
         document.getElementById("myDropdown2").classList.toggle("show");
+        readNotifications();
     }
 
     function listDissapear() {
@@ -28,4 +29,9 @@
             }
         }
     }
+
+    function readNotifications() {
+        $.post("/read-notifications")
+    }
+
 </script>
