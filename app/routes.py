@@ -113,9 +113,12 @@ def edit_profile():
     if existing_user is not None and existing_user != current_user:
         return render_template('editProfile.html', current_page='editProfile', error='That email is already in use')
 
-    avatar = request.files.get('file', None)
+    avatar = request.files.get('avatar', None)
+    print(0)
     if avatar:
-        save_avatar(avatar)
+        print(1)
+        if not save_avatar(avatar):
+            return render_template('editProfile.html', current_page='editProfile', error='Please upload a valid image')
 
     current_user.bio = bio
     current_user.first_name = first_name
@@ -124,7 +127,7 @@ def edit_profile():
     current_user.username = username
     db.session.commit()
 
-    return redirect(url_for('editProfile'))
+    return redirect(url_for('edit_profile'))
 
 
 def save_avatar(file):
@@ -136,7 +139,6 @@ def save_avatar(file):
     path = app.config['AVATARS_SAVE_PATH']
     file.save(os.path.join(path, picture_fn))
     current_user.avatar = url_for('get_avatar', filename=picture_fn)
-    db.session.commit()
     return True
 
 
