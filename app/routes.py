@@ -186,7 +186,7 @@ def edit_profile():
     current_user.username = username
     db.session.commit()
 
-    return redirect(url_for('edit_profile')
+    return redirect(url_for('edit_profile'))
 
 
 def save_avatar(file):
