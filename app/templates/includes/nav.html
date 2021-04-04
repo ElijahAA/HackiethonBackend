@@ -12,15 +12,11 @@
                     autofocus
                     onkeyup="filterFunction()"
             >
-            <p>Test</p>
-            {% for u in all_users %}
-                <p>{{ u.first_name }}</p>
-            {% endfor %}
             <div id="myDropdown" class="dropdown-content1">
                 {% for user in all_users %}
-                    {% if user != current_user %}
+{#                    {% if user != current_user %}#}
                         <a href="{{ url_for('profile', username=user.username) }}">{{ user.get_formatted_name() }}</a>
-                    {% endif %}
+{#                    {% endif %}#}
                 {% endfor %}
             </div>
 
