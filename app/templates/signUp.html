@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign Up</title>
+    <title>SODO - Register</title>
     {% include "includes/head.html" %}
 </head>
 
-
 <br/>
-<header id=name>Sign Up</header>
 <body>
-<form class='form' method="POST">
-    {% if error %}
-        <p class='error'>{{ error}}</p>
-    {% endif %}
-    <div class='form-group'>
-        <label for="username">Username</label>
-        <input type="text" class='input' name="username" id="username">
+<div id="test">
+    <div class="single-div">
+        <h1 class='name'><a href="index.html">SODO</a></h1>
+        <h3>Sign Up</h3>
+        <form class='form' method="POST">
+            {% if error %}
+                <p class='error'>{{ error }}</p>
+            {% endif %}
+            <div class='form-group'>
+                <label for="username">Username</label>
+                <input type="text" class='input' name="username" id="username">
+            </div>
+            <div class='form-group'>
+                <label for="firstName">First Name</label>
+                <input type="text" class='input' name="first_name" id="firstName">
+            </div>
+            <div class='form-group'>
+                <label for="lastName">Last Name</label>
+                <input type="text" class='input' name="last_name" id="lastName">
+            </div>
+            <div class='form-group'>
+                <label for="email">Email</label>
+                <input type="email" class='input' name="email" id="email">
+            </div>
+            <div class='form-group'>
+                <label for="password">Password</label>
+                <input type="password" class='input' name="password" id="password">
+                <br/>
+            </div>
+            <button type="submit" class="button btn-fill">Sign Up</button>
+            <button class='button3'><a class='link' href="{{ url_for('login') }}">Already have an account? Log in!</a></button>
+        </form>
     </div>
-    <div class='form-group'>
-        <label for="firstName">First Name</label>
-        <input type="text" class='input' name="first_name" id="firstName">
-    </div>
-    <div class='form-group'>
-        <label for="lastName">Last Name</label>
-        <input type="text" class='input' name="last_name" id="lastName">
-    </div>
-    <div class='form-group'>
-        <label for="email">Email</label>
-        <input type="email" class='input' name="email" id="email">
-    </div>
-    <div class='form-group'>
-        <label for="password">Password</label>
-        <input type="password" class='input' name="password" id="password">
-        <br/>
-    </div>
-    <button type="submit">Sign Up</button>
-</form>
+</div>
 </body>
 
 </html>

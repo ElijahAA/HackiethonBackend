@@ -1,8 +1,9 @@
-from app import app, db, avatars
+from app import app, db
 import os, secrets
 from flask import request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Todo, TodoReaction, Notification
+from datetime import datetime
 
 
 @app.route('/')
@@ -91,6 +92,19 @@ def todo():
     return redirect(url_for('todo'))
 
 
+@app.route('/todo/<id>/complete')
+@login_required
+def complete_todo(id):
+    todo = Todo.query.get(int(id))
+    if todo is None:
+        return redirect(url_for('todo'))
+    todo.completed = True
+    todo.completed_at = datetime.utcnow()
+    current_user.add_timeline(f"Completed task <strong>{todo.title}</strong>")
+    db.session.commit()
+    return redirect(url_for('todo'))
+
+
 @app.route('/todo/<id>/edit', methods=['POST'])
 @login_required
 def edit_todo(id):
@@ -112,15 +126,16 @@ def edit_todo(id):
 def like_todo(id):
     todo = Todo.query.get(int(id))
     if todo is None:
-        return jsonify(result="error", message="Todo not found")
+        return redirect(url_for('todo'))
     if todo.has_liked(current_user):
-        return jsonify(result="error", message="Already liked")
+        return redirect(url_for('todo'))
     db.session.add(TodoReaction(user_id=current_user.id, todo_id=todo.id))
     creator = User.query.get(todo.user_id)
-    creator.add_notification(actor=current_user,
-                             body="{actor_username} liked your completed task <strong>" + todo.title + "</strong>")
+    if creator != current_user:
+        creator.add_notification(actor=current_user,
+                                 body="{actor_username} liked your completed task <strong>" + todo.title + "</strong>")
     db.session.commit()
-    return jsonify(result="success")
+    return redirect(url_for('todo'))
 
 
 @app.route('/todo/<id>/unlike', methods=['GET'])
@@ -128,13 +143,13 @@ def like_todo(id):
 def unlike_todo(id):
     todo = Todo.query.get(int(id))
     if todo is None:
-        return jsonify(result="error", message="Todo not found")
-    reaction = TodoReaction.query.filter_by(user_id=current_user.user.id, todo_id=todo.id).first()
+        return redirect(url_for('todo'))
+    reaction = TodoReaction.query.filter_by(user_id=current_user.id, todo_id=todo.id).first()
     if reaction is None:
-        return jsonify(result="error", message="Not liked")
+        return redirect(url_for('todo'))
     db.session.delete(reaction)
     db.session.commit()
-    return jsonify(result="success")
+    return redirect(url_for('todo'))
 
 
 @app.route('/todo/<id>/delete', methods=['GET'])
@@ -150,6 +165,7 @@ def delete_todo(id):
 
 
 @app.route('/profile/<username>')
+@login_required
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('profile.html', current_page='profile', user=user)
@@ -186,7 +202,7 @@ def edit_profile():
     current_user.username = username
     db.session.commit()
 
-    return redirect(url_for('edit_profile'))
+    return redirect(url_for('profile', username=current_user.username))
 
 
 def save_avatar(file):
@@ -221,18 +237,6 @@ def unfollow(username):
     current_user.unfollow(user)
     db.session.commit()
     return redirect(url_for('profile', username=username))
-
-
-@app.route('/feed', methods=['POST'])
-@login_required
-def feed():
-    feed = current_user.get_feed()
-    return jsonify([{
-        'avatar': '',
-        'name': f.get_creator().get_formatted_name() if f.get_creator() != current_user else "You",
-        'liked': f.has_liked(current_user),
-        'title': f.title,
-    } for f in feed])
 
 
 @app.route('/notifications', methods=['POST'])

@@ -1,69 +1,71 @@
 <br/>
 <h1 class="name"><a href="{{ url_for('index') }}">SODO</a></h1>
-<div class='sign-out'>
-    <div class="dropdown">
-        <input
-                onclick="myFunction()"
-                class='search-input'
-                id="myInput"
-                type="text"
-                placeholder="Search for friends"
-                autofocus
-                onkeyup="filterFunction()"
-        >
-        <div id="myDropdown" class="dropdown-content1">
-            <a href="user.html">Kate P</a>
-            <a href="user.html">Wesley D</a>
-            <a href="user.html">Ray S</a>
-        </div>
-
-    </div>
-    <li class='user'>{{ current_user.first_name + " " + current_user.last_name }}</li>
-    <button class='button5'>
-        <a href="{{ url_for('profile', username=current_user.username) }}">
-            <div class='_profile'>
-                <div class='_head'></div>
-                <div class='_body'></div>
+{% if current_user.is_authenticated %}
+    <div class='sign-out'>
+        <div class="dropdown">
+            <input
+                    onclick="myFunction()"
+                    class='search-input'
+                    id="myInput"
+                    type="text"
+                    placeholder="Search for friends"
+                    autofocus
+                    onkeyup="filterFunction()"
+            >
+            <div id="myDropdown" class="dropdown-content1">
+                {% for user in all_users %}
+                    <a href="{{ url_for('profile', username=user.username) }}">{{ user.get_formatted_name() }}</a>
+                {% endfor %}
             </div>
-        </a>
-    </button>
-    <button class='button5' onclick="myFunction2()">
-        <i class="fa fa-bell"
-           aria-hidden="true"
-           style="background-color: transparent;
+
+        </div>
+        <li class='user'>{{ current_user.first_name + " " + current_user.last_name }}</li>
+        <button class='button5'>
+            <a href="{{ url_for('profile', username=current_user.username) }}">
+                <div class='_profile'>
+                    <div class='_head'></div>
+                    <div class='_body'></div>
+                </div>
+            </a>
+        </button>
+        <button class='button5' onclick="myFunction2()">
+            <i class="fa fa-bell"
+               aria-hidden="true"
+               style="background-color: transparent;
           font-size: 20px;
           color: #525252;"></i>
-        <div id="myDropdown2" class="dropdown-content">
-            {% for notification in current_user.notifications %}
-                <div class='notification-item'>
-                    <div class="clearfix">
-                        {% if notification.get_actor().avatar %}
-                            <img class="img2" src='{{ notification.get_actor().avatar }}' alt="Profile picture">
-                        {% else %}
-                            <img class="img2" src='{{ avatars.default() }}' alt="Profile picture">
-                        {% endif %}
-                        {{ notification.get_data() }}
-                    </div>
-                    <br/>
-                    <p class='notif-text'>{{ moment(notification.timestamp).calendar() }}</p>
-                </div>
-            {% else %}
-                <div class='notification-item'>
-                    <div style="text-align: left;">
-                        No notifications
+            <div id="myDropdown2" class="dropdown-content">
+                {% for notification in current_user.get_notifications() %}
+                    <div class='notification-item'>
+                        <div class="clearfix">
+                            {% if notification.get_actor().avatar %}
+                                <img class="img2" src='{{ notification.get_actor().avatar }}' alt="Profile picture">
+                            {% else %}
+                                <img class="img2" src='{{ avatars.default() }}' alt="Profile picture">
+                            {% endif %}
+                            {{ notification.get_data()|safe }}
+                        </div>
                         <br/>
+                        <p class='notif-text'>{{ moment(notification.timestamp).calendar() }}</p>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    </button>
-    <button class='button5'>
-        <a href="{{ url_for('logout') }}">
-            <i class="fa fa-sign-out"
-               style="font-size: 20px;
+                {% else %}
+                    <div class='notification-item'>
+                        <div style="text-align: left;">
+                            No notifications
+                            <br/>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </button>
+        <button class='button5'>
+            <a href="{{ url_for('logout') }}">
+                <i class="fa fa-sign-out"
+                   style="font-size: 20px;
               color: #525252;
               background-color: white;"
-               aria-hidden="true"></i>
-        </a>
-    </button>
-</div>
+                   aria-hidden="true"></i>
+            </a>
+        </button>
+    </div>
+{% endif %}

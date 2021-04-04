@@ -21,7 +21,7 @@
                         <button class='button2'>Add</button>
                     </div>
                 </form>
-                {% for todo in current_user.todos %}
+                {% for todo in current_user.get_pending_todos() %}
                     <div class='todo-item' todo-id="{{ todo.id }}">
                         <input class='checkbox' type="checkbox"/>
                         <div class='todo-writing'>
@@ -30,6 +30,8 @@
                             <p class='notes' contentEditable="true">{{ todo.description }}</p>
                         </div>
                     </div>
+                {% else %}
+                    <p class='empty-message' id='todos-empty'>No todos</p>
                 {% endfor %}
             </div>
         </div>
@@ -39,11 +41,14 @@
             <div class='feed'>
                 <h3>Feed</h3>
                 {% for item in current_user.get_feed() %}
-                    <div class='feed-item'>
-                        <img class='profile-picture' src='lisa.jpg' alt="Profile picture"/>
+                    <div class='feed-item' todo-id="{{ item.id }}">
+                        <img class='profile-picture'
+                             src='{% if item.get_creator().avatar %} {{ item.get_creator().avatar }} {% else %} {{ avatars.default() }} {% endif %}'
+                             alt="Profile picture"/>
                         <div class='feed-writing'>
                             <div class='feed-heading'>
-                                <h2 class='heading1'>{{ item.get_creator().get_formatted_name() }}</h2>
+                                <h2 class='heading1'>{% if item.get_creator() != current_user %}
+                                    {{ item.get_creator().get_formatted_name() }} {% else %} You {% endif %}</h2>
                                 <div>
                                     <img
                                             src="{% if item.has_liked(current_user) %} {{ url_for('static', filename='heart2.png') }} {% else %} {{ url_for('static', filename='heart.png') }} {% endif %}"
@@ -58,6 +63,8 @@
                             </div>
                         </div>
                     </div>
+                {% else %}
+                    <p class='empty-message' id='feed-empty'>Nothing to show</p>
                 {% endfor %}
             </div>
         </div>

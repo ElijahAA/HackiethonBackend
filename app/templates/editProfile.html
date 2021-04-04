@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit your profile</title>
+    <title>SODO - Edit Profile</title>
     {% include "includes/head.html" %}
 </head>
 <body>
 
-<ul class='nav'>
-    <li><a href="{{ url_for('index') }}">Go back</a></li>
-</ul>
-<br/>
+{% include "includes/nav.html" %}
+
 <div id='test'>
     <div class='single-div'>
-        <header id=name>Edit your profile</header>
+        <h3>Edit your profile</h3>
         <form class='form' method="POST" enctype="multipart/form-data">
             {% if error %} <p class='error'>{{ error }}</p> {% endif %}
-            <div class='form-group' method="POST">
+            <div class="image-cropper">
+                <img src="{% if current_user.avatar %} {{ current_user.avatar }} {% else %} {{ avatars.default() }} {% endif %}" alt="profile picture" class="profile-pic">
+            </div>
+            <div class='form-group'>
                 <label for="img">Upload new profile picture</label>
                 <input style="background-color: transparent;" type="file" id="img" name="avatar"
                        accept="image/x-png,image/jpeg">
-            </div>
-            <div class='form-group'>
-                <label for="bio">Bio </label>
-                <textarea class='input-textarea' rows="4" id="bio" name="bio">{{ current_user.bio if current_user.bio is not none }}</textarea>
             </div>
             <div class='form-group'>
                 <label for="firstName">First Name</label>
@@ -33,12 +30,17 @@
                 <input type="text" class='input' id="lastName" name="last_name" value="{{ current_user.last_name }}">
             </div>
             <div class='form-group'>
+                <label for="username">Username</label>
+                <input type="text" class='input' id="username" name="username" value="{{ current_user.username }}">
+            </div>
+            <div class='form-group'>
                 <label for="email">Email</label>
                 <input type="text" class='input' id="email" name="email" value="{{ current_user.email }}">
             </div>
             <div class='form-group'>
-                <label for="username">Username</label>
-                <input type="text" class='input' id="username" name="username" value="{{ current_user.username }}">
+                <label for="bio">Bio </label>
+                <textarea class='input-textarea' rows="4" id="bio"
+                          name="bio">{{ current_user.bio if current_user.bio is not none }}</textarea>
             </div>
             <button class='button1' type="submit">Save</button>
         </form>

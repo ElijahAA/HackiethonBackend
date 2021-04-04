@@ -52,6 +52,9 @@ class User(UserMixin, db.Model):
     def get_formatted_name(self):
         return f"{self.first_name} {self.last_name[0]}"
 
+    def get_pending_todos(self):
+        return self.todos.filter_by(completed=False).all()
+
     def get_feed(self):
         followed = Todo.query.filter_by(completed=True).join(
             followers, (followers.c.followed_id == Todo.user_id)) \
@@ -70,8 +73,11 @@ class User(UserMixin, db.Model):
         db.session.add(timeline)
         return timeline
 
+    def get_notifications(self):
+        return self.notifications.order_by(Notification.timestamp.desc()).limit(10).all()
+
     def get_timeline(self):
-        return self.timeline.order_by(Timeline.timestamp.desc())
+        return self.timeline.order_by(Timeline.timestamp.desc()).limit(10).all()
 
     def add_notification(self, actor, body):
         notification = Notification(actor_id=actor.id, body=body, user=self)
@@ -133,8 +139,8 @@ class Notification(db.Model):
 
     def get_data(self):
         actor = self.get_actor()
-        return self.body.replace("{actor_username}", actor.username)\
-            .replace("{actor_name}", actor.get_formatted_name())\
+        return self.body.replace("{actor_username}", actor.username) \
+            .replace("{actor_name}", actor.get_formatted_name()) \
             .replace("{actor_full_name}", actor.get_full_name())
 
     def get_time(self):
