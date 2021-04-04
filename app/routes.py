@@ -8,7 +8,9 @@ from app.models import User, Todo, TodoReaction, Notification
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', current_page="home")
+    if current_user.is_authenticated:
+        return redirect(url_for('todo'))
+    return render_template('index.html')
 
 
 @app.route('/avatars/<path:filename>')
@@ -19,17 +21,17 @@ def get_avatar(filename):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html', current_page="login")
+        return render_template('login.html')
 
     username = request.form['username']
     password = request.form['password']
 
     if username == '' or password == '':
-        return render_template('login.html', current_page="login", error='Please enter both a username and a password')
+        return render_template('login.html', error='Please enter both a username and a password')
 
     user = User.query.filter_by(username=username).first()
     if user is None or not user.check_password(password):
-        return render_template('login.html', current_page="login", error='Invalid username or password')
+        return render_template('login.html', error='Invalid username or password')
 
     login_user(user)
     return redirect(url_for('index'))
@@ -47,7 +49,7 @@ def signup():
         return redirect(url_for('index'))
 
     if request.method == 'GET':
-        return render_template('signUp.html', current_page="signup")
+        return render_template('signUp.html')
 
     username = request.form['username']
     first_name = request.form['first_name']
@@ -56,7 +58,7 @@ def signup():
     password = request.form['password']
 
     if username == '' or first_name == '' or last_name == '' or email == '' or password == '':
-        return render_template('signUp.html', current_page="signup", error='Missing required fields')
+        return render_template('signUp.html', error='Missing required fields')
 
     existing_user = User.query.filter_by(username=username).first()
     if existing_user is not None:
@@ -84,7 +86,7 @@ def todo():
     user = User.query.get(current_user.id)
     newTodo = Todo(title=title, description=description, user=user)
     db.session.add(newTodo)
-    user.add_timeline(f"Created a new task <strong>${title}</strong>")
+    user.add_timeline(f"Created a new task <strong>{title}</strong>")
     db.session.commit()
     return redirect(url_for('todo'))
 
@@ -138,10 +140,10 @@ def unlike_todo(id):
 @app.route('/todo/<id>/delete', methods=['GET'])
 @login_required
 def delete_todo(id):
-    todo = Todo.query.get(int(id)).first_or_404()
+    todo = Todo.query.get(int(id))
     if todo.user_id != current_user.id:
         return redirect(url_for('todo'))
-    current_user.add_timeline(f"Deleted task <strong>${todo.title}</strong>")
+    current_user.add_timeline(f"Deleted task <strong>{todo.title}</strong>")
     db.session.delete(todo)
     db.session.commit()
     return redirect(url_for('todo'))

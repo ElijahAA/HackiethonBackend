@@ -1,53 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Profile</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,900;1,100&display=swap" rel="stylesheet">
+    <title>Profile</title>
+    {% include "includes/head.html" %}
 </head>
-<ul class='nav'>
-  <li><a href="index.html">Home</a></li>
-  <li><a href="login.html">Login</a></li>
-  <li><a href="signUp.html">Sign Up</a></li>
-  <li><a class="active" href="profile.html">Profile</a></li>
-</ul>
+
+{% include "includes/nav.html" %}
+
 <br/>
-<header id=profile>Profile</header>
-<body>
-  <img src="">
-  <img class="profile-pic" src="">
-  <p class="name">Name Here</p>
-  <p class="username">@username</p>
-  <p class="about">Bio here.</p>
-  <button type="button" class="followBtn">Follow</button>
 
-  <!--
-  <div class="post" class="jane-math">
-    <a class="profile-icon-link"><img class="profile-icon" src=""></a>
-    <p class="post-title"><strong>Jane</strong>has completed<strong>Math Homework</strong></p>
-    <p class="time">1 minute ago</p>
-    <p>After a lot of work I finally learnt the Pythagoraes Theorem!</p>
-    <button type="button" class="show-more">Show more</button>
-    <button type="button" class="comments">Comments</button>
-    <button type="button" class="like">
-      <img>
-      <p class="interact-btns">Like</p>
-    </button>
-    <button type="button" class="comment">
-      <img>
-      <p class="interact-btns">Comment</p>
-    </button>
-    <div class="comments">
-      <div class="comments-instance">
-        <a class="profile-icon-comments-link"><img class="profile-icon-comments"></a>
-        <p class="comments-title">Kelly</p>
-        <p>Nice!</p>
-
-      </div>
+<div class='grid-container1' id='test'>
+    <div class='profile'>
+        <p class="profile-name">{{ user.first_name + " " + user.last_name }}</p>
+        <p class="profile-username">@{{ user.username }}</p>
     </div>
-    -->
+    <div class="profile-info">
+        <div class="image-cropper">
+            <img src="{% if user.avatar %} {{ user.avatar }} {% else %} {{ avatars.default() }} {% endif %}"
+                 alt="profile picture" class="profile-pic">
+        </div>
+        <p class="bio">{{ user.bio }}</p>
+        <br/>
+        {% if user == current_user %}
+            <button class='button1'><a class='link' href="{{ url_for('edit_profile') }}">Edit</a></button>
+        {% elif current_user.is_following(user) %}
+            <button class='button1'><a class='link'
+                                       href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></button>
+        {% else %}
+            <button class='button1'><a class='link' href="{{ url_for('follow', username=user.username) }}">Follow</a>
+            </button>
+        {% endif %}
+        <br/>
+    </div>
 
 
-  </div>
+    <div class='container1 container2'>
+        <div class='timeline'>
+            <p class="profile-name timeline-name">Timeline</p>
+            <div class='notifications'>
+                <div style="  overflow:auto; height: 300px;">
+                    {% for item in user.get_timeline() %}
+                        <div class='notification-item'>
+                            <p class='notes'>{{ item.body|safe }}</p>
+                            <br/>
+                            <p class='notif-text'>{{ item.timestamp }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <script>
+                /* When the user clicks on the button,
+                toggle between hiding and showing the dropdown content */
+                function myFunction() {
+                    document.getElementById("myDropdown").classList.toggle("show");
+                }
+
+                function myFunction2() {
+                    document.getElementById("myDropdown2").classList.toggle("show");
+                }
+
+                function listDissapear() {
+                    document.getElementById("myDropdown").classList.toggle("unshow");
+                }
+
+                function filterFunction() {
+                    var input, filter, ul, li, a, i;
+                    input = document.getElementById("myInput");
+                    filter = input.value.toUpperCase();
+                    div = document.getElementById("myDropdown");
+                    a = div.getElementsByTagName("a");
+                    for (i = 0; i < a.length; i++) {
+                        txtValue = a[i].textContent || a[i].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            a[i].style.display = "";
+                        } else {
+                            a[i].style.display = "none";
+                        }
+                    }
+                }
+
+            </script>
+
+</html>

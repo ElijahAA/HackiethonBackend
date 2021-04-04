@@ -4,74 +4,9 @@
     <title>Home</title>
     {% include "includes/head.html" %}
 </head>
-<ul class='nav'>
-    <!-- <li><a class='active' href="todo.html">Home</a></li> -->
-    <!-- <li><input type="text" class='search-input' placeholder="Search for friends" autofocus></li> -->
-    <div class='sign-out'>
-        <div class="dropdown">
-            <input
-                    onclick="myFunction()"
-                    class='search-input'
-                    id="myInput"
-                    type="text"
-                    placeholder="Search for friends"
-                    autofocus
-                    onkeyup="filterFunction()"
-            >
-            <div id="myDropdown" class="dropdown-content">
-                <a href="user.html">Kate P</a>
-                <a href="user.html">Wesley D</a>
-                <a href="user.html">Ray S</a>
-            </div>
-        </div>
-        <li class='user'>{{ current_user.first_name + " " + current_user.last_name }}</li>
-        <button class='button5'>
-            <a href="{{ url_for('profile', username=current_user.username) }}">
-                <div class='_profile'>
-                    <div class='_head'></div>
-                    <div class='_body'></div>
-                </div>
-            </a>
-        </button>
-        <button class='button5'>
-            <a href="{{ url_for('logout') }}">
-                <i class="fa fa-sign-out"
-                   style="font-size: 20px;
-                color: #525252;
-                background-color: white;"
-                   aria-hidden="true"></i>
-            </a>
-        </button>
-    </div>
-</ul>
 
-<script>
-    /* When the user clicks on the button,
-    toggle between hiding and showing the dropdown content */
-    function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
+{% include "includes/nav.html" %}
 
-    function listDissapear() {
-        document.getElementById("myDropdown").classList.toggle("unshow");
-    }
-
-    function filterFunction() {
-        var input, filter, ul, li, a, i;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        div = document.getElementById("myDropdown");
-        a = div.getElementsByTagName("a");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
-            }
-        }
-    }
-</script>
 
 <div class='grid-container' id='test'>
     <div class='container'>
@@ -83,11 +18,11 @@
                         <input type="text" class='title-input' placeholder="Title" autofocus name="title">
                         <br/>
                         <textarea class='notes-input' rows="4" placeholder="Notes" name="description"></textarea>
-                        <button class='button2' type="submit">Add</button>
+                        <button class='button2'>Add</button>
                     </div>
                 </form>
-                {% for todo in todos %}
-                    <div class='todo-item'>
+                {% for todo in current_user.todos %}
+                    <div class='todo-item' todo-id="{{ todo.id }}">
                         <input class='checkbox' type="checkbox"/>
                         <div class='todo-writing'>
                             <h2 class='heading' contentEditable="true">{{ todo.title }}</h2>
@@ -99,48 +34,37 @@
             </div>
         </div>
     </div>
-    <div class='container'>
+    <div class='container-feed'>
         <div class='grid-item'>
             <div class='feed'>
                 <h3>Feed</h3>
-                {% for item in feed %}
+                {% for item in current_user.get_feed() %}
                     <div class='feed-item'>
-                        <img class='profile-picture' src='{{ item.user.avatar }}' alt="Profile picture"/>
+                        <img class='profile-picture' src='lisa.jpg' alt="Profile picture"/>
                         <div class='feed-writing'>
                             <div class='feed-heading'>
-                                <h2 class='heading1'>{{ item.user.first_name }}</h2>
-                                <i class="fa fa-heart" style="font-size:15px;
-                color:pink;
-                background-color:transparent;"></i>
+                                <h2 class='heading1'>{{ item.get_creator().get_formatted_name() }}</h2>
+                                <div>
+                                    <img
+                                            src="{% if item.has_liked(current_user) %} {{ url_for('static', filename='heart2.png') }} {% else %} {{ url_for('static', filename='heart.png') }} {% endif %}"
+                                            id="heartChange"
+                                            style="height:15px; width: 15px; background-color:transparent;" alt="Heart">
+                                </div>
                             </div>
                             <div class='task-item'>
-                                <div class="check"><p class='notes'></p></div>
-                                {{ item.body }}
+                                <div class="check">
+                                    <p class='notes'></div>
+                                {{ item.title }} </p>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
-
-            </div>
-        </div>
-    </div>
-    <div class='container'>
-        <div class='grid-item'>
-            <div class='notifications'>
-                <h3>Notifications</h3>
-                <div class='notification-item'>
-                    <p class='notes'>Steven D completed preparing for his presentation</p>
-                    <br/>
-                    <p class='notif-text'>{timestamp}</p>
-                </div>
-                <div class='notification-item'>
-                    <p class='notes'>Steven D completed preparing for his presentation</p>
-                    <br/>
-                    <p class='notif-text'>{timestamp}</p>
-                </div>
             </div>
         </div>
     </div>
 </div>
+
+{% include "includes/footer.html" %}
+<script src="{{ url_for('static', filename='todo.js') }}"></script>
 
 </html>

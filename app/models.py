@@ -36,7 +36,7 @@ class User(UserMixin, db.Model):
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
-            self.add_timeline(f"Followed <strong>${user.get_formatted_name()}</strong>")
+            self.add_timeline(f"Followed <strong>{user.get_formatted_name()}</strong>")
             user.add_notification(actor=self, body="{actor_name} has started following you")
 
     def unfollow(self, user):
@@ -45,7 +45,7 @@ class User(UserMixin, db.Model):
 
     def is_following(self, user):
         return self.followed.filter(
-            self.followers.c.followed_id == user.id).count() > 0
+            followers.c.followed_id == user.id).count() > 0
 
     def get_formatted_name(self):
         return f"{self.first_name} {self.last_name[0]}"
@@ -67,6 +67,9 @@ class User(UserMixin, db.Model):
         timeline = Timeline(user=self, body=body)
         db.session.add(timeline)
         return timeline
+
+    def get_timeline(self):
+        return self.timeline.order_by(Timeline.timestamp.desc())
 
     def add_notification(self, actor, body):
         notification = Notification(actor_id=actor.id, body=body, user=self)
@@ -120,18 +123,21 @@ class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     actor_id = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.Float, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     body = db.Column(db.String(120), nullable=False)
 
+    def get_actor(self):
+        return User.query.get(self.actor_id)
+
     def get_data(self):
-        actor = User.query.get(self.actor_id)
+        actor = self.get_actor()
         return self.body.replace("{actor_username}", actor.username).replace("{actor_name}", actor.get_formatted_name())
 
 
 class Timeline(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    timestamp = db.Column(db.Float, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     body = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
