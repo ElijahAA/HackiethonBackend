@@ -8,6 +8,7 @@ from flask_avatar import Avatars
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+avatars = Avatars(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'

@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, db, avatars
 from datetime import datetime
 import os, secrets
 from flask import request, redirect, url_for, render_template, send_from_directory
@@ -11,6 +11,11 @@ from app.models import User, Todo
 @app.route('/index')
 def index():
     return render_template('index.html', current_page="home")
+
+
+@app.route('/avatars/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(app.config['AVATARS_SAVE_PATH'], filename)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,6 +95,51 @@ def profile(username):
     return render_template('profile.html', current_page='profile', user=user)
 
 
+@app.route('/edit-profile', methods=['GET', 'POST'])
+def edit_profile():
+    if request.method == 'GET':
+        return render_template('editProfile.html', current_page='editProfile')
+    bio = request.form['bio']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    username = request.form['username']
+
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user is not None and existing_user != current_user:
+        return render_template('editProfile.html', current_page='editProfile', error='That username is already in use')
+
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user is not None and existing_user != current_user:
+        return render_template('editProfile.html', current_page='editProfile', error='That email is already in use')
+
+    avatar = request.files.get('file', None)
+    if avatar:
+        save_avatar(avatar)
+
+    current_user.bio = bio
+    current_user.first_name = first_name
+    current_user.last_name = last_name
+    current_user.email = email
+    current_user.username = username
+    db.session.commit()
+
+    return redirect(url_for('editProfile'))
+
+
+def save_avatar(file):
+    random_hex = secrets.token_hex(10)
+    _, file_ext = os.path.splitext(file.filename)
+    if file_ext not in ['.jpeg', '.png', '.jpg']:
+        return False
+    picture_fn = random_hex + file_ext
+    path = app.config['AVATARS_SAVE_PATH']
+    file.save(os.path.join(path, picture_fn))
+    current_user.avatar = url_for('get_avatar', filename=picture_fn)
+    db.session.commit()
+    return True
+
+
 @app.route('/settings')
 def settings():
     return render_template('settings.html')
@@ -103,7 +153,6 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=['POST'])
 def unfollow(username):
     pass
-
 
 
 @app.errorhandler(404)
