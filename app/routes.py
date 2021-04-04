@@ -2,7 +2,7 @@ from app import app, db, avatars
 import os, secrets
 from flask import request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Todo, TodoReaction
+from app.models import User, Todo, TodoReaction, Notification
 
 
 @app.route('/')
@@ -196,6 +196,21 @@ def unfollow(username):
         return redirect(url_for('profile', username=username))
     current_user.unfollow(user)
     return redirect(url_for('profile', username=username))
+
+
+@app.route('/notifications', methods=['POST'])
+@login_required
+def notifications():
+    new_notifications = current_user.notifications.filter(
+        Notification.timestamp > current_user.last_notification_read_time).count() > 0
+    notifications = current_user.notifications.order_by(Notification.timestamp.asc()).limit(10).all()
+    return jsonify({
+        'new': new_notifications,
+        'notifications': [{
+            'data': n.get_data(),
+            'timestamp': n.timestamp
+        } for n in notifications]
+    })
 
 
 @app.errorhandler(404)
