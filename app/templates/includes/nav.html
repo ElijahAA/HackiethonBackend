@@ -45,7 +45,7 @@
                         {{ notification.get_data() }}
                     </div>
                     <br/>
-                    <p class='notif-text'>{{ notification.timestamp }}</p>
+                    <p class='notif-text'>{{ moment(notification.timestamp).calendar() }}</p>
                 </div>
             {% else %}
                 <div class='notification-item'>

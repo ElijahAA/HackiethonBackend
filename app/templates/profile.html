@@ -43,7 +43,7 @@
                         <div class='notification-item'>
                             <p class='notes'>{{ item.body|safe }}</p>
                             <br/>
-                            <p class='notif-text'>{{ item.timestamp }}</p>
+                            <p class='notif-text'>{{ moment(item.timestamp).calendar() }}</p>
                         </div>
                     {% endfor %}
                 </div>

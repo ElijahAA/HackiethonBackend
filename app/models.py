@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
 from datetime import datetime
-from time import time
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -36,7 +35,7 @@ class User(UserMixin, db.Model):
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
-            self.add_timeline(f"Followed <strong>{user.get_formatted_name()}</strong>")
+            self.add_timeline(f"Followed <strong>{user.get_full_name()}</strong>")
             user.add_notification(actor=self, body="{actor_name} has started following you")
 
     def unfollow(self, user):
@@ -46,6 +45,9 @@ class User(UserMixin, db.Model):
     def is_following(self, user):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def get_formatted_name(self):
         return f"{self.first_name} {self.last_name[0]}"
@@ -131,7 +133,12 @@ class Notification(db.Model):
 
     def get_data(self):
         actor = self.get_actor()
-        return self.body.replace("{actor_username}", actor.username).replace("{actor_name}", actor.get_formatted_name())
+        return self.body.replace("{actor_username}", actor.username)\
+            .replace("{actor_name}", actor.get_formatted_name())\
+            .replace("{actor_full_name}", actor.get_full_name())
+
+    def get_time(self):
+        return str(self.timestamp)
 
 
 class Timeline(db.Model):
