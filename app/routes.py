@@ -1,7 +1,9 @@
 from app import app, db
 from datetime import datetime
-from flask import request, redirect, url_for, render_template
+import os, secrets
+from flask import request, redirect, url_for, render_template, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_avatars import Avatars
 from app.models import User, Todo
 
 
@@ -103,14 +105,12 @@ def unfollow(username):
     pass
 
 
-@app.route('/edit-profile', methods=['POST', 'GET'])
-def editProfile():
-    # TODO insert picture here please
-    # TODO also somehow make this work please
-    bio = request.form['bio']
-    username = request.form['username']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
 
-    return redirect(f'/profile/{current_user.username}')
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
