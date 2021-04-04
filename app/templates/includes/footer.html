@@ -34,4 +34,11 @@
         $.post("/read-notifications")
     }
 
+    $("#myInput").on("keypress", function (event) {
+        if (event.which === 13) {
+            let value = this.value;
+            window.location.href = `/profile/${value}`;
+        }
+    })
+
 </script>

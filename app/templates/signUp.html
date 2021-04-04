@@ -9,7 +9,7 @@
 <body>
 <div id="test">
     <div class="single-div">
-        <h1 class='name'><a href="index.html">SODO</a></h1>
+        <h1 class='name'><a href="{{ url_for('index') }}">SODO</a></h1>
         <h3>Sign Up</h3>
         <form class='form' method="POST">
             {% if error %}
