@@ -1,22 +1,106 @@
 * {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 900;
+  font-size: 36px;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  left: 25px;
+  color: #0055bf;
+  background-color: white;
+  padding: 15px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: 20px;
+}
+
+.h3-strong {
+  font-weight: 900;
+  background-color: transparent;
+}
+
+body {
+  background-color: #e1e9ee;
+}
+
+#test {
+  -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+     -moz-animation: fadein 1s; /* Firefox < 16 */
+      -ms-animation: fadein 1s; /* Internet Explorer */
+       -o-animation: fadein 1s; /* Opera < 12.1 */
+          animation: fadein 1s;
+}
+
+.home-rectangle {
+  background-color: white;
+  text-align: center;
+  border-radius: 30px;
+  margin: auto;
+  margin-top: 140px;
+  width: 35%;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-bottom: 70px;
+  padding-top: 15px;
+  display: block;
+  box-shadow: 15px 20px 20px #aaaaaa2a;
+}
+
+.home-rectangle p {
+  margin-top: 45px;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+.home-rectangle button {
+  margin-top: 200px;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 12px;
+  margin-top: 30px;
+  width: 150px;
+  font-weight: 300;
+}
+
+#log-in {
+  background-color: transparent;
+  border: 2px solid #0055bf;
+  color: #0055bf;
+}
+
+#sign-up {
+  background-color: #0055bf;
+}
+
+* {
   background-color: #E1E9EE;
   font-family: 'Roboto', sans-serif;
 }
 
-button {
-  cursor: pointer;
+.h2-strong {
+  background-color: transparent;
 }
 
-.name {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 46px;
+.home-text {
+  font-weight: 200;
+  width: 80%;
   text-align: center;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  color: #525252;
-  background-color: transparent;
-  padding-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sodo {
+  width: 4em;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .nav {
@@ -36,7 +120,9 @@ button {
 
 .user {
   height: auto;
+  list-style: none;
 }
+
 .nav li {
   float: left;
   padding: 10px;
@@ -186,6 +272,10 @@ label {
 
 .button1 {
   margin-top: 20px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 0px;
+
   border-radius: 30px;
   background-color: #c0d1dc;
   border: none;
@@ -255,7 +345,10 @@ label {
   padding: 5px;
   background-color: white;
   border-radius: 30px;
+  overflow: auto;
+  height: 500px;
 }
+
 
 .notifications {
   margin: auto;
@@ -273,12 +366,12 @@ label {
   padding: 15px 20px 0px;
   font-size: 15px;
   text-align: left;
-  margin-bottom: 20px;
-  margin-left: 20px;
-  margin-right: 20px;
   background-color: white;
-  width: auto;
-  border-top: 0.5px solid #DCDCDC;
+  width: 240px;
+  border-radius: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+  border: 0.5px solid #808080;
 }
 
 .notif-text {
@@ -298,6 +391,8 @@ label {
  border-radius: 30px;
  /* border: 1px solid black; */
  background-color: white;
+  overflow: auto;
+  height: 500px;
 }
 
 .todo-item {
@@ -338,7 +433,7 @@ label {
 }
 
 .task-item {
-  display: inline;
+  display: inline
   background-color: white;
 }
 
@@ -346,6 +441,21 @@ label {
   width: auto;
   height: 50px;
   border-radius: 30%;
+  vertical-align:middle;
+}
+
+.img2 {
+  width: auto;
+  height: 50px;
+  border-radius: 30%;
+  float: left;
+  margin-right: 8px;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .todo-writing {
@@ -456,6 +566,7 @@ div {
   margin: auto;
   padding-bottom: 10px;
   display: block;
+
 }
 .grid-container {
   padding-top: 5px;
@@ -466,6 +577,37 @@ div {
   align-items: top;
   justify-items: center;
   justify-content: center;
+}
+
+.grid-container1 {
+  padding: 25px;
+  padding-left: 35px;
+  padding-right: 35px;
+  margin-top: 39px;
+  margin-left: 20px;
+  margin-right: 18px;
+  display: grid;
+  grid-column-gap: 0px;
+  grid-template-columns: 50% auto;
+  grid-template-rows: 18% auto;
+  padding: auto;
+  align-items: top;
+  /* justify-content: flex-start; */
+  /* width: 90%; */
+  border-radius: 30px;
+  background-color: white;
+}
+
+.container1 {
+  position:relative;
+  width: 100%;
+  background-color: white;
+  border-radius: 30px;
+  padding-top: 20px;
+}
+
+.container2 {
+  grid-area: 2/2;
 }
 
 .grid-item {
@@ -479,10 +621,21 @@ div {
   background-color: white;
 }
 
+.grid-item1 {
+  width: auto;
+  height: auto;
+  border-radius: 30px;
+  font-size: 30px;
+  text-align: center;
+  background-color: white;
+}
+
 .container {
   position: relative;
   width: 100%;
+  background-color: transparent;
 }
+
 
 h3 {
   font-family: "Roboto";
@@ -531,16 +684,7 @@ h3 {
   font-weight: 200;
 }
 
-#test {
-    margin-top: 25px;
-    font-size: 21px;
-    text-align: center;
-    -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
-       -moz-animation: fadein 1s; /* Firefox < 16 */
-        -ms-animation: fadein 1s; /* Internet Explorer */
-         -o-animation: fadein 1s; /* Opera < 12.1 */
-            animation: fadein 1s;
-}
+
 
 @keyframes fadein {
     from { opacity: 0; }
@@ -596,10 +740,13 @@ h3 {
 .dropdown-content {
   display: none;
   position: absolute;
-  width: 250px;
+  width: auto;
+  height: 500px;
   overflow: auto;
   z-index: 1;
   border-radius: 10px;
+  margin-left: -200px;
+  margin-top: 20px;
 }
 
 .dropdown-content a {
@@ -662,7 +809,8 @@ h3 {
 }
 
 .profile-info {
-  grid-area: 1/1;
+  text-align: left;
+  padding-left: 20px;
 }
 
 .profile-timeline {
@@ -670,9 +818,62 @@ h3 {
 }
 
 .profile-name {
-  font-size: 30px;
+  font-size: 50px;
+  font-weight:250;
+  text-align: left;
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+.timeline-name {
+  font-size: 36px;
 }
 
 .profile-username {
+  text-align: left;
   color: #525252;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 40px;
+  padding-bottom: 20px;
+  border-bottom: 0.5px solid #DCDCDC;
+
+}
+
+.profile {
+  display:block;
+}
+
+.image-cropper {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.profile-pic {
+  display: inline;
+  margin: 0 auto;
+  margin-left: -25%; /*-- centers the image --*/
+  height: 100%;
+  width: auto;
+}
+
+.profile-bio {
+  background-color: #DCDCDC;
+  border: none;
+  height: auto;
+  width: 90%;
+  font-family: "Roboto";
+  background-color: #DCDCDC;
+  border-radius: 10px;
+  padding-left: 10px;
+  margin-top: 0px;
+}
+
+.timeline {
+  border-left: 0.5px solid #DCDCDC;
 }

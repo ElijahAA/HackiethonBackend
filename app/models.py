@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from app import login
 from datetime import datetime
 from time import time
+
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
                      db.Column('followed_id', db.Integer, db.ForeignKey('user.id')))
@@ -21,9 +22,11 @@ class User(UserMixin, db.Model):
     password_reset = db.Column(db.String(15), index=True, unique=True, default=None)
     todos = db.relation('Todo', backref='user', lazy='dynamic')
 
+    timeline = db.relationship('Timeline', backref='user', lazy='dynamic')
+
     last_notification_read_time = db.Column(db.DateTime)
-    notifications = db.relationship('Notification', backref='user',
-                                    lazy='dynamic')
+    notifications = db.relationship('Notification', backref='user', lazy='dynamic')
+
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -33,7 +36,8 @@ class User(UserMixin, db.Model):
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
-            user.add_notification(actor=self, body="{actor} has started following you")
+            self.add_timeline(f"Followed <strong>${user.get_formatted_name()}</strong>")
+            user.add_notification(actor=self, body="{actor_name} has started following you")
 
     def unfollow(self, user):
         if self.is_following(user):
@@ -42,6 +46,9 @@ class User(UserMixin, db.Model):
     def is_following(self, user):
         return self.followed.filter(
             self.followers.c.followed_id == user.id).count() > 0
+
+    def get_formatted_name(self):
+        return f"{self.first_name} {self.last_name[0]}"
 
     def get_feed(self):
         followed = Todo.query.filter_by(completed=True).join(
@@ -55,6 +62,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def add_timeline(self, body):
+        timeline = Timeline(user=self, body=body)
+        db.session.add(timeline)
+        return timeline
 
     def add_notification(self, actor, body):
         notification = Notification(actor_id=actor.id, body=body, user=self)
@@ -85,6 +97,9 @@ class Todo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reactions = db.relation('TodoReaction', backref='todo', lazy='dynamic')
 
+    def get_creator(self):
+        return User.query.get(self.user_id)
+
     def has_liked(self, user):
         return self.reactions.filter_by(user_id=user.id).count() > 0
 
@@ -104,10 +119,20 @@ class TodoReaction(db.Model):
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    actor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    actor_id = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Float, index=True, default=datetime.utcnow)
     body = db.Column(db.String(120), nullable=False)
 
     def get_data(self):
         actor = User.query.get(self.actor_id)
-        return self.body.replace("{actor_username}", actor.username)
+        return self.body.replace("{actor_username}", actor.username).replace("{actor_name}", actor.get_formatted_name())
+
+
+class Timeline(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.Float, index=True, default=datetime.utcnow)
+    body = db.Column(db.String(120), nullable=False)
+
+    def __repr__(self):
+        return '<Timeline {}>'.format(self.body)

@@ -78,12 +78,13 @@ def signup():
 @login_required
 def todo():
     if request.method == 'GET':
-        return render_template('todo.html', current_page="todos", todos=Todo.query.all(), )
+        return render_template('todo.html', current_page="todos", todos=Todo.query.filter_by(completed=False).all())
     title = request.form['title']
     description = request.form['description']
     user = User.query.get(current_user.id)
     newTodo = Todo(title=title, description=description, user=user)
     db.session.add(newTodo)
+    user.add_timeline(f"Created a new task <strong>${title}</strong>")
     db.session.commit()
     return redirect(url_for('todo'))
 
@@ -110,7 +111,26 @@ def like_todo(id):
     todo = Todo.query.get(int(id))
     if todo is None:
         return jsonify(result="error", message="Todo not found")
+    if todo.has_liked(current_user):
+        return jsonify(result="error", message="Already liked")
     db.session.add(TodoReaction(user_id=current_user.id, todo_id=todo.id))
+    creator = User.query.get(todo.user_id)
+    creator.add_notification(actor=current_user,
+                             body="{actor_username} liked your completed task <strong>" + todo.title + "</strong>")
+    db.session.commit()
+    return jsonify(result="success")
+
+
+@app.route('/todo/<id>/unlike', methods=['GET'])
+@login_required
+def unlike_todo(id):
+    todo = Todo.query.get(int(id))
+    if todo is None:
+        return jsonify(result="error", message="Todo not found")
+    reaction = TodoReaction.query.filter_by(user_id=current_user.user.id, todo_id=todo.id).first()
+    if reaction is None:
+        return jsonify(result="error", message="Not liked")
+    db.session.delete(reaction)
     db.session.commit()
     return jsonify(result="success")
 
@@ -121,7 +141,8 @@ def delete_todo(id):
     todo = Todo.query.get(int(id)).first_or_404()
     if todo.user_id != current_user.id:
         return redirect(url_for('todo'))
-    db.session.remove(todo)
+    current_user.add_timeline(f"Deleted task <strong>${todo.title}</strong>")
+    db.session.delete(todo)
     db.session.commit()
     return redirect(url_for('todo'))
 
@@ -185,6 +206,7 @@ def follow(username):
     if user == current_user:
         return redirect(url_for('profile', username=username))
     current_user.follow(user)
+    db.session.commit()
     return redirect(url_for('profile', username=username))
 
 
@@ -195,7 +217,20 @@ def unfollow(username):
     if user == current_user:
         return redirect(url_for('profile', username=username))
     current_user.unfollow(user)
+    db.session.commit()
     return redirect(url_for('profile', username=username))
+
+
+@app.route('/feed', methods=['POST'])
+@login_required
+def feed():
+    feed = current_user.get_feed()
+    return jsonify([{
+        'avatar': '',
+        'name': f.get_creator().get_formatted_name() if f.get_creator() != current_user else "You",
+        'liked': f.has_liked(current_user),
+        'title': f.title,
+    } for f in feed])
 
 
 @app.route('/notifications', methods=['POST'])

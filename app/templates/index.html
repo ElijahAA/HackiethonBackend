@@ -7,24 +7,19 @@
 </head>
 
 <body>
-{% include "includes/nav.html" %}
-
-<div id='test'>
-    <div class='single-div'>
-        <h1 class='name'>SoDo</h1>
+<div id="test">
+    <div class='single-div1'>
+        <h1 class='name'>SODO</h1>
         <div class="home-rectangle">
-            <h2>SoDo</h2>
-            <h3><strong class="h2-strong">So</strong>cial to <strong class="h2-strong">Do</strong></h3>
-            <p>Ever wonder what your friends are up to? SoDo is a social to do list that allows friends to see each
-                other's to do lists,
-                completed tasks, react to completed tasks and track progress. Join today to add fun and interaction to
-                your to do list!</p>
-            <button type="button" id="log-in">Log in</button>
-            <button type="button" id="sign-up">Sign up</button>
+            <h3><strong class="h3-strong">SO</strong>CIAL<br>TO<strong class="h3-strong">DO</strong></h3>
+            <p>Ever wonder what your friends are up to?<br><br>
+                SODO is a social to do list that allows friends to see each other's to do lists, completed tasks, react
+                to completed tasks and track progress.<br><br>
+                Join today to add fun and interaction to your to do list!</p>
+            <button type="button" id="sign-up"><a style="background-color: inherit" href="{{ url_for('signup') }}">Sign Up</a></button>
+            <button type="button" id="log-in"><a style="background-color: inherit" href="{{ url_for('login') }}">Log In</a></button>
         </div>
-
     </div>
-</div>
-</body>
 
+</body>
 </html>
