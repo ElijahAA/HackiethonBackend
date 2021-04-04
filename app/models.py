@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(64), index=True, nullable=False)
     last_name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True)
+    avatar = db.Column(db.String(64), index=True)
     password_hash = db.Column(db.String(128))
     password_reset = db.Column(db.String(15), index=True, unique=True, default=None)
     todos = db.relation('Todo', backref='user', lazy='dynamic')
