@@ -84,6 +84,8 @@ def todo():
         return render_template('todo.html', current_page="todos", todos=Todo.query.filter_by(completed=False).all())
     title = request.form['title']
     description = request.form['description']
+    if title == '':
+        return redirect(url_for('todo'))
     user = User.query.get(current_user.id)
     newTodo = Todo(title=title, description=description, user=user)
     db.session.add(newTodo)
