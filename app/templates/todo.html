@@ -42,9 +42,13 @@
                 <h3>Feed</h3>
                 {% for item in current_user.get_feed() %}
                     <div class='feed-item' todo-id="{{ item.id }}">
-                        <img class='profile-picture'
-                             src='{% if item.get_creator().avatar %} {{ item.get_creator().avatar }} {% else %} {{ avatars.default() }} {% endif %}'
-                             alt="Profile picture"/>
+                        <a href="{{ url_for('profile', username=item.get_creator().username) }}">
+                            <div class="image-cropper-small">
+                                <img class='profile-pic'
+                                     src='{% if item.get_creator().avatar %} {{ item.get_creator().avatar }} {% else %} {{ avatars.default() }} {% endif %}'
+                                     alt="Profile picture"/>
+                            </div>
+                        </a>
                         <div class='feed-writing'>
                             <div class='feed-heading'>
                                 <h2 class='heading1'>{% if item.get_creator() != current_user %}

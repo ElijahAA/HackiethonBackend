@@ -241,7 +241,7 @@ def unfollow(username):
 
 @app.route('/read-notifications', methods=['POST'])
 @login_required
-def notifications():
+def read_notifications():
     current_user.last_notification_read_time = datetime.utcnow()
     db.session.commit()
     return jsonify(result="success")

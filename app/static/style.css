@@ -496,9 +496,9 @@ label {
 }
 
 .img2 {
-  width: auto;
+  width: 50px;
   height: 50px;
-  border-radius: 30%;
+  border-radius: 50%;
   float: left;
   margin-right: 8px;
 }
@@ -929,6 +929,16 @@ h3 {
 .image-cropper {
     width: 150px;
     height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.image-cropper-small {
+    width: 50px;
+    height: 50px;
     position: relative;
     overflow: hidden;
     border-radius: 50%;
