@@ -13,9 +13,9 @@
                     onkeyup="filterFunction()"
             >
             <div id="myDropdown" class="dropdown-content1">
-                {% for user in all_users %}
+                {% for all_user in users %}
 {#                    {% if user != current_user %}#}
-                        <a href="{{ url_for('profile', username=user.username) }}">{{ user.get_formatted_name() }}</a>
+                        <a href="{{ url_for('profile', username=all_user.username) }}">{{ all_user.get_formatted_name() }}</a>
 {#                    {% endif %}#}
                 {% endfor %}
             </div>
