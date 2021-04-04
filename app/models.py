@@ -40,11 +40,11 @@ class User(UserMixin, db.Model):
             self.followers.c.followed_id == user.id).count() > 0
 
     def followed_todos(self):
-        followed = Todo.query.join(
-            followers, (followers.c.followed_id == Todo.user_id)).filter(
-            followers.c.follower_id == self.id)
+        followed = Todo.query.filter_by(completed=True).join(
+            followers, (followers.c.followed_id == Todo.user_id)) \
+            .filter(followers.c.follower_id == self.id)
         own = Todo.query.filter_by(user_id=self.id)
-        return followed.union(own).order_by(Todo.created_at.desc())
+        return followed.union(own).order_by(Todo.completed_at.desc())
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -70,7 +70,6 @@ class Todo(db.Model):
     completed_at = db.Column(db.DateTime, index=True, default=None, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reactions = db.relation('TodoReaction', backref='todo', lazy='dynamic')
-    comments = db.relation('TodoComment', backref='todo', lazy='dynamic')
 
     def __repr__(self):
         return '<Todo {}>'.format(self.title)
@@ -84,12 +83,3 @@ class TodoReaction(db.Model):
     def __repr__(self):
         return '<TodoReaction {}: {}>'.format(self.todo_id, self.user_id)
 
-
-class TodoComment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(100), index=True, nullable=False)
-    todo_id = db.Column(db.Integer, db.ForeignKey('todo.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return '<TodoComment {}>'.format(self.body)

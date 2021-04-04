@@ -76,7 +76,7 @@ def signup():
     return redirect(url_for('index'))
 
 
-@app.route('/todo')
+@app.route('/todo', methods=['GET', 'POST'])
 def todo():
     if request.method == 'GET':
         return render_template('todo.html', current_page="todos", todos=Todo.query.all(), )
@@ -114,9 +114,7 @@ def edit_profile():
         return render_template('editProfile.html', current_page='editProfile', error='That email is already in use')
 
     avatar = request.files.get('avatar', None)
-    print(0)
     if avatar:
-        print(1)
         if not save_avatar(avatar):
             return render_template('editProfile.html', current_page='editProfile', error='Please upload a valid image')
 
