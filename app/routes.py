@@ -1,10 +1,8 @@
 from app import app, db, avatars
-from datetime import datetime
 import os, secrets
-from flask import request, redirect, url_for, render_template, send_from_directory
+from flask import request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_avatars import Avatars
-from app.models import User, Todo
+from app.models import User, Todo, TodoReaction
 
 
 @app.route('/')
@@ -77,6 +75,7 @@ def signup():
 
 
 @app.route('/todo', methods=['GET', 'POST'])
+@login_required
 def todo():
     if request.method == 'GET':
         return render_template('todo.html', current_page="todos", todos=Todo.query.all(), )
@@ -89,6 +88,44 @@ def todo():
     return redirect(url_for('todo'))
 
 
+@app.route('/todo/<id>/edit', methods=['POST'])
+@login_required
+def edit_todo(id):
+    todo = Todo.query.get(int(id))
+    if todo is None:
+        return jsonify(result="error", message="todo not found")
+    if "title" in request.form:
+        title = request.form['title']
+        todo.title = title
+    if "description" in request.form:
+        description = request.form['description']
+        todo.description = description
+    db.session.commit()
+    return jsonify(result="success")
+
+
+@app.route('/todo/<id>/like', methods=['GET'])
+@login_required
+def like_todo(id):
+    todo = Todo.query.get(int(id))
+    if todo is None:
+        return jsonify(result="error", message="Todo not found")
+    db.session.add(TodoReaction(user_id=current_user.id, todo_id=todo.id))
+    db.session.commit()
+    return jsonify(result="success")
+
+
+@app.route('/todo/<id>/delete', methods=['GET'])
+@login_required
+def delete_todo(id):
+    todo = Todo.query.get(int(id)).first_or_404()
+    if todo.user_id != current_user.id:
+        return redirect(url_for('todo'))
+    db.session.remove(todo)
+    db.session.commit()
+    return redirect(url_for('todo'))
+
+
 @app.route('/profile/<username>')
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -96,6 +133,7 @@ def profile(username):
 
 
 @app.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
 def edit_profile():
     if request.method == 'GET':
         return render_template('editProfile.html', current_page='editProfile')
@@ -140,17 +178,14 @@ def save_avatar(file):
     return True
 
 
-@app.route('/settings')
-def settings():
-    return render_template('settings.html')
-
-
-@app.route('/follow/<username>', methods=['POST'])
+@app.route('/follow/<username>')
+@login_required
 def follow(username):
     pass
 
 
-@app.route('/unfollow/<username>', methods=['POST'])
+@app.route('/unfollow/<username>')
+@login_required
 def unfollow(username):
     pass
 

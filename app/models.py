@@ -71,6 +71,9 @@ class Todo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reactions = db.relation('TodoReaction', backref='todo', lazy='dynamic')
 
+    def has_liked(self, user):
+        return self.reactions.filter_by(user_id=user.id).count() > 0
+
     def __repr__(self):
         return '<Todo {}>'.format(self.title)
 

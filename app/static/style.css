@@ -3,6 +3,10 @@
   font-family: 'Roboto', sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 .name {
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
