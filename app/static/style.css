@@ -166,6 +166,9 @@ button {
   align-items: center;
   color: #525252;
   padding-right: 20px;
+  width: 75%;
+  margin-right: 9;
+  margin-left: auto;
 }
 
 .user {
@@ -251,7 +254,7 @@ button {
   background-color: #DCDCDC;
   border: none;
   height: 30px;
-  width: 30%;
+  width: 40%;
   padding-left: 10px;
 }
 
@@ -273,7 +276,7 @@ button {
   background-color: #DCDCDC;
   border: none;
   height: 40px;
-  width: 250px;
+  width: 100%;
   padding-left: 10px;
   color: #525252;
 }
@@ -283,7 +286,7 @@ button {
   font-size: 16px;
   color: #525252;
   height: auto;
-  width: 600px;
+  width: 100%;
   margin-right: auto;
   margin-left: auto;
   margin-top: 0px;
@@ -317,7 +320,7 @@ label {
   padding-right: 15px;
   text-align: right;
   margin-right:15px;
-  width: 200px;
+  width: 35%;
   background-color: transparent;
 }
 
@@ -362,8 +365,7 @@ label {
 .todo {
   padding-bottom: 10px;
   display: block;
-  background-color: white;
-
+  background-color: transparent;
 }
 
 .title-input {
@@ -371,24 +373,31 @@ label {
   height: 30px;
   width: 70%;
   padding-bottom: 10px;
-  background-color: white;
+  background-color: transparent;
+  float: left;
+  margin-left: 10%;
 }
 
 .notes-input {
   color:#808080;
-  background-color: none;
   border: none;
   height: 30px;
   width: 56%;
   resize: none;
   font-family: Helvetica, sans-serif;
-  background-color: white;
+  background-color: transparent;
+  float: left;
+  margin-left: 10%;
+}
+
+.todo-input {
+  float:left;
 }
 
 .feed {
   margin: auto;
   text-align: center;
-  width: inherit;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   padding: 5px;
@@ -434,16 +443,15 @@ label {
 .todo-list {
  margin: auto;
  text-align: center;
- width: inherit;
+ width: 100%;
  flex-direction: column;
  align-items: center;
  padding: 5px;
  border-radius: 30px;
- /* border: 1px solid black; */
  background-color: white;
-  overflow: auto;
-  overflow-x: hidden;
-  height: 500px;
+ overflow: auto;
+ overflow-x: hidden;
+ height: 500px;
 }
 
 .todo-item {
@@ -479,13 +487,15 @@ label {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  background-color: transparent;
+  background-color: white;
   padding-left: 10px;
+  width: 100%;
 }
 
 .task-item {
   display: inline;
   background-color: white;
+  width: 85%
 }
 
 .profile-picture {
@@ -512,7 +522,6 @@ label {
 .todo-writing {
   padding-left: 30px;
   width: 100%;
-  background-color: white;
 }
 
 .heading {
@@ -520,9 +529,8 @@ label {
   font-size: 15px;
   font-weight: bold;
   color: #525252;
-  width: 85%;
+  width: 90%;
   display: inline-block;
-  background-color: white;
 }
 
 .heading1 {
@@ -541,7 +549,7 @@ label {
 .feed-heading {
   display: flex;
   justify-content:flex-start;
-  width: 230px;
+  width: 95%;
   margin-left: 0;
 }
 .notes {
@@ -561,6 +569,7 @@ label {
   width: 80px;
   color: #525252;
   background-color: white;
+    margin-right: 3%;
 }
 
 .button3 {
@@ -575,7 +584,6 @@ label {
   border: none;
   display: inline-block;
   background-color: white;
-
 }
 
 .link {
@@ -617,20 +625,27 @@ div {
   padding-top: 10px;
   padding-left: 100px;
   padding-right: 100px;
-  margin-top: 60px;
+  margin-top: 90px;
   display: block;
-
+  box-shadow: 15px 20px 20px #aaaaaa2a;
 }
 
 .grid-container {
   padding-top: 50px;
   display: grid;
-  grid-column-gap: 0px;
+  grid-column-gap: 25px;
   grid-template-columns: auto auto;
-  padding: auto;
   align-items: top;
   justify-items: center;
   justify-content: center;
+  /* width: 100% */
+  margin-top: 20px;
+  margin-left: 0;
+  margin-right: 0;
+  padding-right: 20px;
+  padding-left: 20px;
+  grid-template-columns: 60% auto;
+
 }
 
 .grid-container1 {
@@ -666,14 +681,14 @@ div {
 }
 
 .grid-item {
-  width: auto;
-  height: auto;
   border-radius: 30px;
   margin-left: 20px;
   margin-right: 20px;
   font-size: 30px;
   text-align: center;
   background-color: white;
+  box-shadow: 15px 20px 20px #aaaaaa2a;
+  width: 100%
 }
 
 .grid-item1 {
@@ -687,14 +702,14 @@ div {
 
 .container {
   position: relative;
-  width: 600px;
-  background-color: transparent;
+  /* width: 100%; */
+  background-color: green;
 }
 
 .container-feed {
   position: relative;
-  width: 400px;
-  background-color: transparent;
+  /* width: 400px; */
+  background-color: pink;
 }
 
 h3 {
@@ -793,6 +808,7 @@ h3 {
 .dropdown {
   position: relative;
   display: inline-block;
+  width: 25%
 }
 
 .dropdown-content {

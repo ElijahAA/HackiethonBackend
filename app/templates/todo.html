@@ -9,8 +9,8 @@
 
 
 <div class='grid-container' id='test'>
-    <div class='container'>
-        <div class='grid-item'>
+{#    <div class='container'>#}
+{#        <div class='grid-item'>#}
             <div class='todo-list'>
                 <h3>To Do</h3>
                 <form class='form' method="POST">
@@ -34,10 +34,10 @@
                     <p class='empty-message' id='todos-empty'>No todos</p>
                 {% endfor %}
             </div>
-        </div>
-    </div>
-    <div class='container-feed'>
-        <div class='grid-item'>
+{#        </div>#}
+{#    </div>#}
+{#    <div class='container-feed'>#}
+{#        <div class='grid-item'>#}
             <div class='feed'>
                 <h3>Feed</h3>
                 {% for item in current_user.get_feed() %}
@@ -71,8 +71,8 @@
                     <p class='empty-message' id='feed-empty'>Nothing to show</p>
                 {% endfor %}
             </div>
-        </div>
-    </div>
+{#        </div>#}
+{#    </div>#}
 </div>
 
 {% include "includes/footer.html" %}

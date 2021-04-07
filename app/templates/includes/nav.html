@@ -14,9 +14,9 @@
             >
             <div id="myDropdown" class="dropdown-content1">
                 {% for all_user in users %}
-{#                    {% if user != current_user %}#}
+                    {% if all_user != current_user %}
                         <a href="{{ url_for('profile', username=all_user.username) }}">{{ all_user.get_formatted_name() }}</a>
-{#                    {% endif %}#}
+                    {% endif %}
                 {% endfor %}
             </div>
 
