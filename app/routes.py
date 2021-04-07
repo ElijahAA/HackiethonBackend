@@ -63,11 +63,11 @@ def signup():
 
     existing_user = User.query.filter_by(username=username).first()
     if existing_user is not None:
-        return render_template('signUp.html', current_page="signup", error="Username is already in use")
+        return render_template('signUp.html', error="Username is already in use")
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user is not None:
-        return render_template('signUp.html', current_page="signup", error="Email is already in use")
+        return render_template('signUp.html', error="Email is already in use")
 
     user = User(username=username, first_name=first_name, last_name=last_name, email=email)
     user.set_password(password)
@@ -81,7 +81,8 @@ def signup():
 @login_required
 def todo():
     if request.method == 'GET':
-        return render_template('todo.html', current_page="todos", todos=Todo.query.filter_by(completed=False).all())
+        return render_template('todo.html', todos=Todo.query.filter_by(completed=False).all(),
+                               users=User.query.all())
     title = request.form['title']
     description = request.form['description']
     if title == '':
@@ -170,14 +171,14 @@ def delete_todo(id):
 @login_required
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('profile.html', current_page='profile', user=user)
+    return render_template('profile.html', user=user, users=User.query.all())
 
 
 @app.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     if request.method == 'GET':
-        return render_template('editProfile.html', current_page='editProfile')
+        return render_template('editProfile.html', users=User.query.all())
     bio = request.form['bio']
     first_name = request.form['first_name']
     last_name = request.form['last_name']
@@ -186,16 +187,16 @@ def edit_profile():
 
     existing_user = User.query.filter_by(username=username).first()
     if existing_user is not None and existing_user != current_user:
-        return render_template('editProfile.html', current_page='editProfile', error='That username is already in use')
+        return render_template('editProfile.html', error='That username is already in use', users=User.query.all())
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user is not None and existing_user != current_user:
-        return render_template('editProfile.html', current_page='editProfile', error='That email is already in use')
+        return render_template('editProfile.html', error='That email is already in use', users=User.query.all())
 
     avatar = request.files.get('avatar', None)
     if avatar:
         if not save_avatar(avatar):
-            return render_template('editProfile.html', current_page='editProfile', error='Please upload a valid image')
+            return render_template('editProfile.html', error='Please upload a valid image', users=User.query.all())
 
     current_user.bio = bio
     current_user.first_name = first_name
